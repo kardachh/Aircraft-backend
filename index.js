@@ -1,19 +1,17 @@
 import express from "express";
-import {router} from "./routes/aircraft.routes.js"
-const PORT = process.env.port || 5000;
+import { createServer } from "http";
+import { Server } from "socket.io";
+import {Router} from "./src/routes.js";
+
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, { /* options */ });
 
-app.route('/book')
-    .get(function (req, res) {
-        res.send('Get a random book')
-    })
-    .post(function (req, res) {
-        res.send('Add a book')
-    })
-    .put(function (req, res) {
-        res.send('Update the book')
-    })
+io.on("connection", (socket) => {
+    console.log("connect")
+    socket.emit("hello", "world");
+});
 
-app.use('/api',router)
+app.use('/api', Router)
 
-app.listen(PORT, () => console.log("server started on port " + PORT));
+httpServer.listen(5000);
