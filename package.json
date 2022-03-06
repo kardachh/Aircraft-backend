@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node --experimental-json-modules index.js",
+    "dev": "nodemon --experimental-json-modules index.js",
+    "client": "cd src/client; nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
   "dependencies": {
     "express": "^4.17.2",
     "moment": "^2.0.0",
+    "node-fetch": "^3.2.0",
     "pg": "^8.7.1",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1"
