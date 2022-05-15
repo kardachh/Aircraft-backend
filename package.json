@@ -2,12 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "app.js",
   "scripts": {
-    "start": "node --experimental-json-modules index.js",
-    "dev": "nodemon --experimental-json-modules index.js",
-    "client": "cd src/client; nodemon index.js"
+    "start": "node --experimental-json-modules app.js",
+    "dev": "nodemon --experimental-json-modules app.js",
+    "client": "cd src/client; nodemon app.js"
   },
   "keywords": [],
   "author": "",
