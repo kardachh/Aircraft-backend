@@ -1,9 +1,9 @@
 const {Client} = require("pg");
 const {sortAirports} = require("./handler");
-const connectionString = "postgresql://postgres:@localhost:1111/AirCraft";
+const connectionString = "postgresql://postgres:@localhost:1111/AirCraftv3";
 
 module.exports = {
-    getAirports: () => {
+    getAirports: async () => {
         try {
             const getAirports = async () => {
                 const client = new Client({connectionString});
@@ -14,30 +14,32 @@ module.exports = {
                     return sortAirports(rows.rows);
                 })
             }
-            return getAirports().then(res => res)
+            return await getAirports()
         } catch (e) {
-            return {type: "error", msg: "Ошибка при вылонении запроса: " + e, query:"getAirports"};
+            return {type: "error", msg: "Ошибка при вылонении запроса: " + e, query: "getAirports"};
         }
 
     },
 
-    getRoutes: (req, res) => {
-        const {airport} = req.query;
-        if (airport) {
-            const query = {
-                text: 'select * from bookings.routes where departure_airport = $1::text or arrival_airport = $1::text ',
-                values: [airport],
-                rowMode: 'object'
+    getRoutes: async () => {
+        try {
+            const getRoutes = () => {
+                const client = new Client({connectionString});
+                const query = {
+                    text: 'select * from bookings.routes',
+                    rowMode: 'object'
+                }
+                client.connect();
+                return client.query(query).then(rows => {
+                    client.end();
+                    return rows.rows;
+                })
             }
-            pool.query(query).then(rows => {
-                res.json(rows.rows)
-            }).catch(err => {
-                res.status(500).send({"error": err})
-                console.log(err.stack)
-            })
-        } else {
-            res.status(400).send({error: "Airport field is empty."})
+            return await getRoutes();
+        } catch (e) {
+            return {type: "error", msg: "Ошибка при вылонении запроса: " + e};
         }
+
     },
 
     getFlightsByDate: async (date) => {
@@ -72,7 +74,7 @@ module.exports = {
                 ids.map((id, index) => {
                     index === 0 ? whereQuery += `flight_id = ${id} ` : whereQuery += `or flight_id = ${id} `
                 })
-                const query = {text:`select * from bookings.flights where ${whereQuery}`, rowMode:'object'}
+                const query = {text:`select * from bookings.flights_v where ${whereQuery}`, rowMode:'object'}
                 client.connect();
                 return client.query(query).then(rows => {
                     client.end();
